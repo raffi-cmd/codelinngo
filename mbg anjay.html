@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CodeLingo - 200 Soal 11 Level</title>
+  <style>
+    :root {
+      --bg: #0e161b;
+      --card-bg: #152229;
+      --card-border: #233742;
+      --text: #f7fafc;
+      --text-sub: #798f9e;
+      --accent: #58cc02;
+      --accent-shadow: #46a302;
+      --blue: #1cb0f6;
+      --blue-shadow: #1899d6;
+      --fire: #ff9600;
+      --red: #ff4b4b;
+      --red-shadow: #ea2b2b;
+      --yellow: #ffc800;
+      --purple: #ce82ff;
+      --purple-shadow: #a855f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+    body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
+    .app { width: 100%; max-width: 440px; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; position: relative; background: var(--bg); }
+
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 6px; gap: 8px; }
+    .stat-badge { display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 13px; background: var(--card-bg); border: 2px solid var(--card-border); padding: 6px 10px; border-radius: 12px; cursor: pointer; }
+    .streak-badge { color: var(--fire); border-color: rgba(255,150,0,0.3); }
+    .xp-badge { color: var(--yellow); border-color: rgba(255,200,0,0.3); }
+    .level-badge { color: var(--purple); border-color: rgba(206,130,255,0.3); }
+    .heart-badge { color: var(--red); border-color: rgba(255,75,75,0.3); cursor: default; }
+
+    .progress-section { padding: 6px 18px 10px; display: flex; align-items: center; gap: 12px; }
+    .close-btn { background: none; border: none; color: var(--text-sub); font-size: 20px; font-weight: 800; cursor: pointer; }
+    .progress-track { flex: 1; height: 14px; background: var(--card-border); border-radius: 20px; overflow: hidden; position: relative; }
+    .progress-glow { position: absolute; top: 2px; left: 6px; right: 6px; height: 3px; background: rgba(255,255,255,0.35); border-radius: 10px; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #58cc02, #22c55e); border-radius: 20px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .question-counter { font-size: 13px; font-weight: 800; color: var(--text-sub); white-space: nowrap; }
+
+    .content { flex: 1; padding: 4px 18px 140px; display: flex; flex-direction: column; gap: 12px; }
+    .category-row { display: flex; justify-content: space-between; align-items: center; }
+    .category-tag { background: rgba(28,176,246,0.12); border: 1.5px solid var(--blue); color: var(--blue); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; }
+    .level-title-tag { background: rgba(206,130,255,0.15); border: 1.5px solid var(--purple); color: var(--purple); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; }
+    .question-title { font-size: 19px; font-weight: 800; line-height: 1.35; }
+    .code-card { background: #070d10; border: 2px solid var(--card-border); border-radius: 14px; padding: 14px; font-family: "Courier New", Courier, monospace; font-size: 14px; color: #38bdf8; line-height: 1.5; white-space: pre-wrap; word-break: break-all; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); }
+
+    .clue-toggle { align-self: flex-start; background: rgba(255,200,0,0.08); border: 2px solid var(--yellow); border-bottom: 4px solid #cc9900; color: var(--yellow); font-size: 13px; font-weight: 800; padding: 8px 14px; border-radius: 12px; cursor: pointer; }
+    .clue-box { display: none; background: rgba(255,200,0,0.1); border: 2px dashed var(--yellow); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: #fff; line-height: 1.4; }
+
+    .options-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .option-btn { background: var(--card-bg); border: 2px solid var(--card-border); border-bottom: 5px solid var(--card-border); color: var(--text); padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 700; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; transition: all 0.1s ease; }
+    .option-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+    .option-btn.selected { background: #102a38; border-color: var(--blue); border-bottom: 5px solid var(--blue-shadow); color: #70cbf9; }
+    .option-btn.correct-show { background: #10331b !important; border-color: var(--accent) !important; border-bottom: 5px solid var(--accent-shadow) !important; color: var(--accent) !important; }
+    .option-btn.wrong-show { background: #381419 !important; border-color: var(--red) !important; border-bottom: 5px solid var(--red-shadow) !important; color: var(--red) !important; }
+    .badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.08); font-size: 13px; font-weight: 800; color: var(--text-sub); flex-shrink: 0; }
+    .option-btn.selected .badge { background: var(--blue); color: #ffffff; }
+
+    .footer-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; padding: 16px 18px 20px; background: var(--bg); border-top: 2px solid var(--card-border); z-index: 100; }
+    .footer-bar.correct { background: #143520; border-top-color: #235c33; }
+    .footer-bar.wrong { background: #3c141e; border-top-color: #791e28; }
+    .feedback-box { margin-bottom: 12px; display: none; }
+    .feedback-head { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .footer-bar.correct .feedback-head { color: var(--accent); }
+    .footer-bar.wrong .feedback-head { color: var(--red); }
+    .feedback-desc { font-size: 14px; color: #d1d5db; line-height: 1.4; }
+    .answer-key { display: block; margin-top: 6px; font-weight: 800; color: #ffffff; }
+
+    .main-btn { width: 100%; background: var(--accent); border: none; border-bottom: 5px solid var(--accent-shadow); color: #ffffff; padding: 15px; font-size: 16px; font-weight: 800; border-radius: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+    .main-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+    .main-btn.disabled { background: #23323a; border-bottom: 5px solid #141e24; color: var(--text-sub); cursor: not-allowed; transform: none; }
+    .main-btn.danger { background: var(--red); border-bottom: 5px solid var(--red-shadow); }
+
+    .result-view, .level-select-view { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 18px; }
+    .trophy { font-size: 72px; margin-bottom: 12px; }
+    .score-card { width: 100%; background: var(--card-bg); border: 2px solid var(--card-border); border-radius: 18px; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+    .stat-box { background: var(--bg); border: 1px solid var(--card-border); padding: 12px; border-radius: 14px; }
+    .stat-label { font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 800; }
+    .stat-val { font-size: 22px; font-weight: 800; margin-top: 4px; }
+
+    .level-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; margin: 18px 0; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+    .level-card { background: var(--card-bg); border: 2px solid var(--card-border); border-bottom: 4px solid var(--card-border); border-radius: 16px; padding: 14px; cursor: pointer; text-align: left; }
+    .level-card.active { border-color: var(--purple); border-bottom-color: var(--purple-shadow); background: #1e1529; }
+    .level-card.infinite-lvl { grid-column: span 2; border-color: var(--fire); border-bottom-color: #cc7800; background: #29180c; }
+    .level-card-title { font-size: 15px; font-weight: 800; }
+    .level-card-desc { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top-bar">
+      <div class="stat-badge level-badge" id="btn-open-levels" title="Pilih Level"><span>⭐</span><span id="top-level-text">Lvl 1</span></div>
+      <div class="stat-badge streak-badge" title="Streak Harian"><span>🔥</span><span id="streak-count">7</span> H</div>
+      <div class="stat-badge xp-badge" title="Total XP"><span>⚡</span><span id="xp-count">0</span></div>
+      <div class="stat-badge heart-badge" title="Nyawa Infinite"><span>❤️</span><span>∞</span></div>
+    </header>
+
+    <div class="progress-section" id="progress-container">
+      <button type="button" class="close-btn" id="btn-restart">✕</button>
+      <div class="progress-track"><div class="progress-glow"></div><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="question-counter" id="q-counter">1 / 20</div>
+    </div>
+
+    <main class="content" id="quiz-area">
+      <div class="category-row">
+        <div class="category-tag" id="q-category">JAVASCRIPT</div>
+        <div class="level-title-tag" id="q-level-tag">LEVEL 1</div>
+      </div>
+      <h2 class="question-title" id="q-title">...</h2>
+      <pre class="code-card" id="q-code"><code id="q-code-text"></code></pre>
+      <button type="button" class="clue-toggle" id="clue-btn">💡 PETUNJUK</button>
+      <div class="clue-box" id="clue-box"></div>
+      <div class="options-grid" id="q-options"></div>
+    </main>
+
+    <div class="level-select-view" id="level-select-area">
+      <h2 style="font-size: 24px; font-weight: 800;">Pilih Level Latihan</h2>
+      <p style="color: var(--text-sub); margin-top: 4px;">200 Soal (Level 1-10 @ 20 Soal) + Level 11 Acak Infinite</p>
+      <div class="level-grid" id="level-grid-container"></div>
+      <button type="button" class="main-btn" id="btn-close-levels">Kembali Ke Kuis</button>
+    </div>
+
+    <div class="result-view" id="result-area">
+      <div class="trophy" id="res-icon">🏆</div>
+      <h2 style="font-size: 24px; font-weight: 800;" id="res-title">Level Selesai!</h2>
+      <p style="color: var(--text-sub); margin-top: 4px;" id="res-subtitle">Kamu telah menyelesaikan 20 soal pada level ini.</p>
+      <div class="score-card">
+        <div class="stat-box"><div class="stat-label">Skor Benar</div><div class="stat-val" style="color: var(--accent);" id="res-score">0 / 20</div></div>
+        <div class="stat-box"><div class="stat-label">Akurasi</div><div class="stat-val" style="color: var(--blue);" id="res-acc">0%</div></div>
+        <div class="stat-box"><div class="stat-label">XP Didapat</div><div class="stat-val" style="color: var(--yellow);" id="res-xp">+0 XP</div></div>
+        <div class="stat-box"><div class="stat-label">Next Level</div><div class="stat-val" style="color: var(--purple);" id="res-next-lvl">Level 2</div></div>
+      </div>
+      <button type="button" class="main-btn" id="btn-next-level">Lanjut Level Berikutnya</button>
+    </div>
+
+    <footer class="footer-bar" id="footer-bar">
+      <div class="feedback-box" id="feedback-box">
+        <div class="feedback-head" id="feedback-head"></div>
+        <div class="feedback-desc" id="feedback-desc"></div>
+        <div class="answer-key" id="answer-key"></div>
+      </div>
+      <button type="button" class="main-btn disabled" id="action-btn">Periksa</button>
+    </footer>
+  </div>
+
+  <script>
+    // ============ BANK 200 SOAL TERSTRUKTUR ============
+    function buildBank() {
+      var bank = [];
+      var defs = [
+        { cat: "Variabel JS", code: function(n){ return "let x = " + n + ";\nconsole.log(typeof x);"; }, opts: ["'number'","'string'","'object'","'undefined'"], ans: 0, exp: "Bilangan bulat selalu bertipe 'number' di JavaScript." },
+        { cat: "Index Python", code: function(n){ return "lst = [" + n + ", " + (n+10) + ", " + (n+20) + "]\nprint(lst[-1])"; }, opts: ["-1","Error","Elemen terakhir","Elemen pertama"], ans: 2, exp: "Index -1 di Python selalu merujuk elemen paling akhir." },
+        { cat: "Strict Equality", code: function(n){ return "console.log(" + n + " === '" + n + "');"; }, opts: ["true","false","NaN","TypeError"], ans: 1, exp: "=== membandingkan nilai DAN tipe; number vs string = false." },
+        { cat: "Modulo JS", code: function(n){ return "console.log(" + (n+7) + " % " + (n===1?3:5) + ");"; }, opts: ["Sisa pembagian","Hasil bagi","Error","0"], ans: 0, exp: "Operator % mengembalikan sisa pembagian." },
+        { cat: "Range Python", code: function(n){ return "for i in range(" + (n%5+2) + "):\n    print('Halo')"; }, opts: ["2x","3x","1x","Error"], ans: (n%5+2)===3?1:0, exp: "range(n) menjalankan loop sebanyak n kali." },
+        { cat: "Array push", code: function(n){ return "var a = [1,2];\na.push(" + n + ");\nconsole.log(a.length);"; }, opts: ["2","3","4","1"], ans: 1, exp: "push menambah 1 elemen sehingga panjang menjadi 3." },
+        { cat: "Lambda Python", code: function(n){ return "f = lambda x: x * 2\nprint(f(" + n + "))"; }, opts: [String(n*2),String(n),String(n+2),"Error"], ans: 0, exp: "lambda x: x*2 mengalikan input dengan 2." },
+        { cat: "Boolean JS", code: function(n){ return "console.log(Boolean(0) === Boolean(''));"; }, opts: ["true","false","undefined","Error"], ans: (n%2)===0?0:0, exp: "0 dan '' keduanya falsy, hasilnya true." },
+        { cat: "Dict get", code: function(n){ return "d = {'a': " + n + "}\nprint(d.get('b'))"; }, opts: ["None","KeyError","'b'","0"], ans: 0, exp: "dict.get() mengembalikan None jika key tidak ada." },
+        { cat: "Return String", code: function(n){ return "function f(){ return 'x' };\nconsole.log(typeof f());"; }, opts: ["'string'","'function'","'object'","'undefined'"], ans: 0, exp: "return 'x' mengembalikan string, typeof = 'string'." },
+        { cat: "List Append", code: function(n){ return "x = [1,2]\nx.append(" + n + ")\nprint(len(x))"; }, opts: ["2","3","1","Error"], ans: 1, exp: "append menambah satu elemen, panjang list jadi 3." },
+        { cat: "String Length", code: function(n){ return "console.log('halo'.length);"; }, opts: ["4","3","5","undefined"], ans: 0, exp: "'halo' punya 4 karakter: h-a-l-o." },
+        { cat: "If Else JS", code: function(n){ return "let u = " + n + ";\nif(u >= 18){ console.log('D'); } else { console.log('R'); }"; }, opts: ["'R'","'D'","Error","undefined"], ans: n>=18?1:0, exp: "Cabang else dipilih karena nilai di bawah 18." },
+        { cat: "String Repeat", code: function(n){ return "print('ab' * " + (n%3+1) + ")"; }, opts: ["'abab'","'ababab'","'ab'","Error"], ans: (n%3+1)===2?0:1, exp: "String dikali n akan diduplikasi sebanyak n kali." },
+        { cat: "Truthy List", code: function(n){ return "print(bool([]) is False, bool([1]) is True)"; }, opts: ["True True","False False","Error","None"], ans: 0, exp: "List kosong falsy, list berisi truthy." },
+        { cat: "Object Access", code: function(n){ return "var o = {k: " + n + "};\nconsole.log(o.k);"; }, opts: [String(n),"undefined","Error","0"], ans: 0, exp: "Dot notation o.k mengakses properti k." },
+        { cat: "Upper Case", code: function(n){ return "s = 'halo'\nprint(s.upper())"; }, opts: ["'HALO'","'halo'","'Halo'","Error"], ans: 0, exp: "str.upper() membuat SEMUA huruf kapital." },
+        { cat: "Scope var", code: function(n){ return "var a = " + n + ";\nfunction f(){ var a = 99; }\nf();\nconsole.log(a);"; }, opts: [String(n),"99","undefined","Error"], ans: 0, exp: "var di dalam fungsi bersifat lokal, tidak mengubah global." },
+        { cat: "Typeof NaN", code: function(n){ return "console.log(typeof NaN);"; }, opts: ["'number'","'NaN'","'undefined'","'error'"], ans: 0, exp: "NaN secara teknis bertipe 'number' di JS." },
+        { cat: "Default Param", code: function(n){ return "def f(a=" + n + "):\n    return a\nprint(f())"; }, opts: [String(n),"None","Error","0"], ans: 0, exp: "Parameter default dipakai saat argumen tidak diberikan." }
+      ];
+      for (var i = 1; i <= 200; i++) {
+        var d = defs[(i - 1) % defs.length];
+        var lvl = Math.ceil(i / 20);
+        pos = i; // soal ke-berapa dalam level (1-20)
+        var base = pos * 3;
+        bank.push({
+          id: i,
+          level: lvl,
+          category: d.cat,
+          title: "Soal #" + i + " - " + d.cat,
+          code: d.code(base),
+          clue: "Lihat apa yang sebenarnya dievaluasi kode " + d.cat + " ini.",
+          options: d.opts,
+          answer: d.ans,
+          explain: d.exp
+        });
+      }
+      return bank;
+    }
+    var masterBank = buildBank();
+    // ==================================================
+
+    var currentLevel = 1;
+    var currentLevelQuestions = [];
+    var currentIdx = 0;
+    var selectedIdx = null;
+    var checked = false;
+    var score = 0;
+    var xpEarned = 0;
+    var clueVisible = false;
+
+    function getEl(id) { return document.getElementById(id); }
+
+    function loadLevel(lvl) {
+      currentLevel = lvl;
+      getEl("top-level-text").innerText = lvl === 11 ? "Lvl 11 ♾️" : "Lvl " + lvl;
+      getEl("q-level-tag").innerText = lvl === 11 ? "LEVEL 11 (ACAK)" : "LEVEL " + lvl;
+
+      if (lvl <= 10) {
+        currentLevelQuestions = masterBank.filter(function(q) { return q.level === lvl; });
+      } else {
+        currentLevelQuestions = masterBank.slice().sort(function() { return 0.5 - Math.random(); }).slice(0, 20);
+      }
+      currentIdx = 0;
+      score = 0;
+      xpEarned = 0;
+      getEl("xp-count").innerText = "0";
+      renderQuestion(0);
+    }
+
+    function renderQuestion(idx) {
+      selectedIdx = null;
+      checked = false;
+      clueVisible = false;
+      var total = currentLevelQuestions.length;
+      getEl("progress-fill").style.width = (idx / total * 100) + "%";
+      getEl("q-counter").innerText = (idx + 1) + " / " + total;
+
+      getEl("footer-bar").className = "footer-bar";
+      getEl("feedback-box").style.display = "none";
+      getEl("answer-key").innerText = "";
+      getEl("action-btn").className = "main-btn disabled";
+      getEl("action-btn").innerText = "Periksa";
+      getEl("clue-box").style.display = "none";
+      getEl("clue-btn").innerText = "💡 PETUNJUK";
+
+      var item = currentLevelQuestions[idx];
+      getEl("q-category").innerText = item.category.toUpperCase();
+      getEl("q-title").innerText = item.title;
+      getEl("q-code-text").innerText = item.code;
+      getEl("clue-box").innerText = item.clue;
+
+      var labels = ["A", "B", "C", "D"];
+      var grid = getEl("q-options");
+      grid.innerHTML = "";
+      for (var i = 0; i < item.options.length; i++) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.id = "opt-" + i;
+        btn.setAttribute("data-idx", i);
+        btn.innerHTML = '<span class="badge">' + labels[i] + '</span> <span>' + item.options[i] + '</span>';
+        grid.appendChild(btn);
+      }
+    }
+
+    getEl("q-options").addEventListener("click", function(e) {
+      if (checked) return;
+      var target = e.target;
+      while (target && target !== getEl("q-options")) {
+        if (target.classList && target.classList.contains("option-btn")) {
+          selectOption(parseInt(target.getAttribute("data-idx"), 10));
+          break;
+        }
+        target = target.parentNode;
+      }
+    });
+
+    function selectOption(index) {
+      selectedIdx = index;
+      var btns = getEl("q-options").getElementsByClassName("option-btn");
+      for (var j = 0; j < btns.length; j++) btns[j].classList.remove("selected");
+      getEl("opt-" + index).classList.add("selected");
+      getEl("action-btn").className = "main-btn";
+    }
+
+    getEl("clue-btn").addEventListener("click", function() {
+      clueVisible = !clueVisible;
+      getEl("clue-box").style.display = clueVisible ? "block" : "none";
+      getEl("clue-btn").innerText = clueVisible ? "🙈 TUTUP PETUNJUK" : "💡 PETUNJUK";
+    });
+
+    getEl("action-btn").addEventListener("click", function() {
+      if (selectedIdx === null && !checked) return;
+      if (!checked) {
+        checked = true;
+        var item = currentLevelQuestions[currentIdx];
+        var isCorrect = selectedIdx === item.answer;
+        if (isCorrect) {
+          score++;
+          xpEarned += 15;
+          getEl("xp-count").innerText = xpEarned;
+          getEl("footer-bar").className = "footer-bar correct";
+          getEl("feedback-head").innerText = "✓ Luar Biasa! (+15 XP)";
+          getEl("opt-" + selectedIdx).classList.add("correct-show");
+          getEl("action-btn").className = "main-btn";
+        } else {
+          getEl("footer-bar").className = "footer-bar wrong";
+          getEl("feedback-head").innerText = "✕ Kurang Tepat";
+          getEl("answer-key").innerText = "Jawaban Benar: " + item.options[item.answer];
+          getEl("opt-" + selectedIdx).classList.add("wrong-show");
+          getEl("opt-" + item.answer).classList.add("correct-show");
+          getEl("action-btn").className = "main-btn danger";
+        }
+        getEl("feedback-desc").innerText = item.explain;
+        getEl("feedback-box").style.display = "block";
+        getEl("action-btn").innerText = "Lanjut";
+      } else {
+        currentIdx++;
+        if (currentIdx < currentLevelQuestions.length) renderQuestion(currentIdx);
+        else showResult();
+      }
+    });
+
+    function showResult() {
+      getEl("progress-fill").style.width = "100%";
+      getEl("quiz-area").style.display = "none";
+      getEl("footer-bar").style.display = "none";
+      getEl("level-select-area").style.display = "none";
+      getEl("result-area").style.display = "flex";
+
+      var total = currentLevelQuestions.length;
+      var acc = Math.round((score / total) * 100);
+      getEl("res-score").innerText = score + " / " + total;
+      getEl("res-acc").innerText = acc + "%";
+      getEl("res-xp").innerText = "+" + (score * 15) + " XP";
+      getEl("res-next-lvl").innerText = currentLevel < 10 ? "Level " + (currentLevel + 1) : "Level 11 ♾️";
+      getEl("res-icon").innerText = acc >= 80 ? "🏆" : (acc >= 50 ? "⚡" : "🎯");
+      getEl("res-title").innerText = acc >= 80 ? "Luar Biasa!" : (acc >= 50 ? "Bagus!" : "Tetap Semangat!");
+    }
+
+    function renderLevelGrid() {
+      var container = getEl("level-grid-container");
+      container.innerHTML = "";
+      for (var l = 1; l <= 10; l++) {
+        var card = document.createElement("div");
+        card.className = "level-card" + (l === currentLevel ? " active" : "");
+        card.setAttribute("onclick", "selectLevelFromMenu(" + l + ")");
+        card.innerHTML = '<div class="level-card-title">Level ' + l + '</div><div class="level-card-desc">Soal #' + ((l-1)*20+1) + ' - #' + (l*20) + '</div>';
+        container.appendChild(card);
+      }
+      var inf = document.createElement("div");
+      inf.className = "level-card infinite-lvl" + (currentLevel === 11 ? " active" : "");
+      inf.setAttribute("onclick", "selectLevelFromMenu(11)");
+      inf.innerHTML = '<div class="level-card-title">🔥 Level 11 (Infinite Mode)</div><div class="level-card-desc">20 Soal Diacak dari Seluruh 200 Soal Bank</div>';
+      container.appendChild(inf);
+    }
+
+    function openLevelMenu() {
+      renderLevelGrid();
+      getEl("quiz-area").style.display = "none";
+      getEl("result-area").style.display = "none";
+      getEl("footer-bar").style.display = "none";
+      getEl("level-select-area").style.display = "flex";
+    }
+    function closeLevelMenu() {
+      getEl("level-select-area").style.display = "none";
+      getEl("quiz-area").style.display = "flex";
+      getEl("footer-bar").style.display = "block";
+    }
+    function selectLevelFromMenu(lvl) {
+      closeLevelMenu();
+      loadLevel(lvl);
+    }
+
+    getEl("btn-open-levels").addEventListener("click", openLevelMenu);
+    getEl("btn-close-levels").addEventListener("click", closeLevelMenu);
+    getEl("btn-restart").addEventListener("click", function() { loadLevel(currentLevel); });
+    getEl("btn-next-level").addEventListener("click", function() {
+      var next = currentLevel < 11 ? currentLevel + 1 : 11;
+      getEl("result-area").style.display = "none";
+      getEl("quiz-area").style.display = "flex";
+      getEl("footer-bar").style.display = "block";
+      loadLevel(next);
+    });
+
+    loadLevel(1);
+  </script>
+</body>
+</html>
